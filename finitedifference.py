@@ -24,24 +24,19 @@ def central_difference(f, x, h):
 	return (f(x + h) - f(x - h)) / (2 * h)
 
 
-def finite_difference(f, a, b, diff_func: callable, n: int = 100, endpoint: bool = True):
-	"""
-	:param f: function f(x) to evaluate
-	:param a: start point of interval
-	:param b: end point of interval
-	:param diff_func: forward_difference/central_difference etc
-	:param n: number of samples to generate.
-	:param endpoint: if True, :param b: is the last point. Otherwise, it is not included.
-	:return: f'(x), f(x) over [a, b], [a, b]
+def finite_difference(f, x, h = 0.01, method = forward_difference):
 	"""
 
-	"""retstep=True makes linspace also return the step size."""
-	x, h = np.linspace(a, b, num=n, endpoint=endpoint, retstep=True)
+	:param f:
+	:param x:
+	:param diff_func:
+	:return:
+	"""
 
 	y = f(x)
-	dy_dx = diff_func(f, x, h)
+	dy_dx = method(f, x, h)
 
-	return dy_dx, y, x
+	return method(f, x, h)
 
 
 def exercise_one():
@@ -60,7 +55,8 @@ def exercise_one():
 	g = lambda x: -2 * x * f(x)
 
 	"""Evaluate forward difference"""
-	dy_dx, y, x = finite_difference(f, -2, 2, forward_difference)
+	x, h = np.linspace(-2, 2, num=100, retstep=True)
+	dy_dx = forward_difference(f, x, h)
 
 	"""Evaluate and find maximum error"""
 	err = g(x) - dy_dx
@@ -76,7 +72,7 @@ def exercise_one():
 	Create logspace (similar linspace but log-scaled) for the step-size h between a and b
 	"""
 	a, b = -1, -12
-	h = np.logspace(a, b, num=np.abs(b - a + 1), base=10)
+	h = np.logspace(a, b, num=np.abs(b - a + 1))
 
 	""""""
 	err = g(x_max) - forward_difference(f, x_max, h)
@@ -106,11 +102,20 @@ def exercise_two():
 	Exercise two
 	"""
 
+	"""Create a new figure for plotting the results"""
+	figure = plot.figure()
+	axes = figure.add_subplot(111)
+
 	"""Define f(x)"""
 	f = lambda x: np.tan(x * np.sin(x))
 
 	"""Evaluate the derivative using second-order central difference"""
-	dy_dx, y, x = finite_difference(f, -1, 1, central_difference)
+	x, h = np.linspace(-1, 1, num=100, retstep=True)
+	dy_dx = central_difference(f, x, h)
+
+	"""Plot results for (a)"""
+	axes.plot(x, f(x), label=r"$y = f(x)$", color="b")
+	axes.plot(x, dy_dx, label=r"$y = f^{\prime}(x)$", color="g")
 
 	"""Print results for (b)"""
 	x_i = -0.5
@@ -131,13 +136,6 @@ def exercise_two():
 	print(f"dy/dx at x = {x_i}, step = {h / (10 ** dh)}, using forward difference: {forward:.4f}")
 	print(f"Forward difference has to have a step size {dh} order(s) of magnitude less than required for the central"
 		  f" difference method to get identical results.")
-
-	"""Create a new figure and plot the results"""
-	figure = plot.figure()
-	axes = figure.add_subplot(111)
-
-	axes.plot(x, y, label=r"$y = f(x)$", color="b")
-	axes.plot(x, dy_dx, label=r"$y = f^{\prime}(x)$", color="g")
 
 	axes.set_title(r"Exercise two: $f(x) = \tan(x \cdot \sin(x))$")
 	axes.grid()
@@ -185,6 +183,8 @@ def exercise_three():
 	f = lambda x, y: np.sin(x * np.arccos(y))
 
 	print("My scheme is: \n\t(f(x + h, y) - f(x - h, y)) / 2h\n\t(f(x, y + k) - f(x, y - k)) / 2k")
+
+	print(f"[dx, dy] = {grad(f, coords=(1., 0.5), steps=(1e-3, 1e-3))}")
 	print(f"Directional derivative: {directional_derivative(f, coords=(1., 0.5), vector=(2., -1.), steps=(0.001, 0.001))}")
 
 
