@@ -128,7 +128,7 @@ def exercise_two():
 		dh += 1
 		forward = forward_difference(f, x_i, h / (10 ** dh))
 
-	print(f"dy/dx at x = {x_i}, step = {h}, using forward difference: {forward:.4f}")
+	print(f"dy/dx at x = {x_i}, step = {h / (10 ** dh)}, using forward difference: {forward:.4f}")
 	print(f"Forward difference has to have a step size {dh} order(s) of magnitude less than required for the central"
 		  f" difference method to get identical results.")
 
@@ -146,15 +146,33 @@ def exercise_two():
 
 def grad(f, coords, steps):
 	"""
+	Calculates the gradient of function f for each coordinate in :param coords: with step sizes in :param steps:
+
 	:param f: function to calculate derivative of
 	:param coords: tuple of coordinates of interest (x, y, etc.)
-	:param steps: step sizes for each coordinate
-	:return: derivative approximation for each coordinate
+	:param steps: step sizes for each coordinate. Must be same size as :param coords:
+	:return: 2nd order derivative approximation for each coordinate
+
+	Pseudo-code for little babies:
+		for i in range(n):
+			h = steps[i]
+			df_by_dx_i = (f(x_1, ..., x_i + h, ..., x_n) - f(x_1, ..., x_i - h, ..., x_n)) / (2 * h)
+			out.append(df_by_dx_i)
 	"""
-	return [(f(*(coords[:i] + (coord + step,) + coords[i+1:])) - f(*(coords[:i] + (coord - step,) + coords[i+1:]))) / (2 * step) for i, (coord, step) in enumerate(zip(coords, steps))]
+	return [(f(*(coords[:i]+(coord+step,)+coords[i+1:])) - f(*(coords[:i]+(coord-step,)+coords[i+1:]))) / (2 * step) for i, (coord, step) in enumerate(zip(coords, steps))]
 
 
 def directional_derivative(f, coords, vector, steps):
+	"""
+	Directional derivative of f is:
+		grad(f) dot (direction vector as a unit vector)
+
+	:param f:
+	:param coords:
+	:param vector:
+	:param steps:
+	:return:
+	"""
 	return np.dot(grad(f, coords, steps), vector / np.linalg.norm(vector))
 
 
@@ -166,11 +184,8 @@ def exercise_three():
 	"""Define f(x, y)"""
 	f = lambda x, y: np.sin(x * np.arccos(y))
 
-	scheme_x = "(f(x + h, y) - f(x - h, y)) / 2h"
-	scheme_y = "(f(x, y + k) - f(x, y - k)) / 2k"
-
-	print(f"My scheme is: \n\t{scheme_x}\n\t{scheme_y}")
-	print(f"directional derivative: {directional_derivative(f, coords=(1., 0.5), vector=(2., -1.), steps=(0.001, 0.001))}")
+	print("My scheme is: \n\t(f(x + h, y) - f(x - h, y)) / 2h\n\t(f(x, y + k) - f(x, y - k)) / 2k")
+	print(f"Directional derivative: {directional_derivative(f, coords=(1., 0.5), vector=(2., -1.), steps=(0.001, 0.001))}")
 
 
 if __name__ == "__main__":
