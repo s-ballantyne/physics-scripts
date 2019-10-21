@@ -24,21 +24,6 @@ def central_difference(f, x, h):
 	return (f(x + h) - f(x - h)) / (2 * h)
 
 
-def finite_difference(f, x, h = 0.01, method = forward_difference):
-	"""
-
-	:param f:
-	:param x:
-	:param diff_func:
-	:return:
-	"""
-
-	y = f(x)
-	dy_dx = method(f, x, h)
-
-	return method(f, x, h)
-
-
 def exercise_one():
 	"""
 	Exercise one
@@ -157,7 +142,7 @@ def grad(f, coords, steps):
 			df_by_dx_i = (f(x_1, ..., x_i + h, ..., x_n) - f(x_1, ..., x_i - h, ..., x_n)) / (2 * h)
 			out.append(df_by_dx_i)
 	"""
-	return [(f(*(coords[:i]+(coord+step,)+coords[i+1:])) - f(*(coords[:i]+(coord-step,)+coords[i+1:]))) / (2 * step) for i, (coord, step) in enumerate(zip(coords, steps))]
+	return [(f(*(coords[:i]+(coords[i]+step,)+coords[i+1:])) - f(*(coords[:i]+(coords[i]-step,)+coords[i+1:]))) / (2 * step) for i, step in enumerate(steps)]
 
 
 def directional_derivative(f, coords, vector, steps):
