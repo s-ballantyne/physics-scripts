@@ -141,6 +141,8 @@ def grad(f, coords, steps):
 			h = steps[i]
 			df_by_dx_i = (f(x_1, ..., x_i + h, ..., x_n) - f(x_1, ..., x_i - h, ..., x_n)) / (2 * h)
 			out.append(df_by_dx_i)
+
+	Note: for single variable f, it should be called like: grad(f, (a,), (h,))
 	"""
 	return [(f(*(coords[:i]+(coords[i]+step,)+coords[i+1:])) - f(*(coords[:i]+(coords[i]-step,)+coords[i+1:]))) / (2 * step) for i, step in enumerate(steps)]
 
