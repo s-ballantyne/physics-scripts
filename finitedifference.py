@@ -160,8 +160,11 @@ def exercise_three():
 
 	print("My scheme is: \n\t(f(x + h, y) - f(x - h, y)) / 2h\n\t(f(x, y + k) - f(x, y - k)) / 2k")
 
-	print(f"grad(f) at -0.5 = {grad(f, coords=(1., 0.5), steps=(1e-3, 1e-3))}")
-	print(f"directional derivative = {directional_derivative(f, coords=(1., 0.5), vector=(2., -1.), steps=(0.001, 0.001))}")
+	point = (1., 0.5)
+	direction = (2., -1.)
+	steps = (1e-3, 1e-3)
+	print(f"grad(f) at {point}: {tuple(grad(f, coords=point, steps=steps))}")
+	print(f"grad(f) at {point}, along {direction}: {directional_derivative(f, coords=point, vector=direction, steps=steps)}")
 
 
 if __name__ == "__main__":
