@@ -44,12 +44,12 @@ def exercise_one():
 	dy_dx = forward_difference(f, x, h)
 
 	"""Evaluate and find maximum error"""
-	err = g(x) - dy_dx
+	err = dy_dx - g(x)
 	abs_err = np.abs(err)
-	x_max, abs_err_max = np.amax(abs_err), x[np.argmax(abs_err)]
+	x_max, abs_err_max = x[np.argmax(abs_err)], np.amax(abs_err)
 
 	"""Print maximum error, plot error on graph"""
-	print(f"x_max = {x_max:.12f} err = {abs_err_max:.15f}")
+	print(f"x_max = {x_max:.12f} err = {abs_err_max}")
 	axes.plot(x, abs_err, label="error", color="r")
 
 	"""
@@ -57,7 +57,7 @@ def exercise_one():
 	Create logspace (similar linspace but log-scaled) for the step-size h between a and b
 	"""
 	a, b = -1, -12
-	h = np.logspace(a, b, num=np.abs(b - a + 1))
+	h = np.logspace(a, b, num=np.abs(b - a - 1))
 
 	""""""
 	err = g(x_max) - forward_difference(f, x_max, h)
@@ -136,13 +136,12 @@ def grad(f, coords, steps):
 	:param steps: step sizes for each coordinate. Must be same size as :param coords:
 	:return: 2nd order derivative approximation for each coordinate
 
-	Pseudo-code for little babies:
 		for i in range(n):
 			h = steps[i]
-			df_by_dx_i = (f(x_1, ..., x_i + h, ..., x_n) - f(x_1, ..., x_i - h, ..., x_n)) / (2 * h)
-			out.append(df_by_dx_i)
+			df/dx_i = (f(x_1, ..., x_i + h, ..., x_n) - f(x_1, ..., x_i - h, ..., x_n)) / (2 * h)
+			out.append(df/dx_i)
 
-	Note: for single variable f, it should be called like: grad(f, (a,), (h,))
+	Note: for single variable f, it should be called like: grad(f, (x,), (h,))
 	"""
 	return [(f(*(coords[:i]+(coords[i]+step,)+coords[i+1:])) - f(*(coords[:i]+(coords[i]-step,)+coords[i+1:]))) / (2 * step) for i, step in enumerate(steps)]
 
