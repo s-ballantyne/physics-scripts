@@ -63,8 +63,8 @@ def exercise_one():
 			f" since real numbers cannot be exactly represented on a computer with finite\n"
 			f" precision, which may be magnified by the representation of the mathematical\n"
 			f" formula in this script.\n"
-			f"It could also be due to the truncation error of the Taylor expansion,\n"
-			f" since the formula is only first-order accurate.")
+			f"Additionally, it appears the the error is directly proportional to the step size h,\n"
+			f" until it reaches the minimum value.")
 
 	# axes.plot(x, y, label="$y = f(x)$", color="b")
 	# axes.errorbar(x, dy_dx, err, label="$y = f^{\prime}(x)$", color="g")
