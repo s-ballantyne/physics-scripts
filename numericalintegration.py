@@ -70,23 +70,41 @@ def trapezium_rule_nd(f_, *limits, num=100):
 
 
 def exercise_one():
+	""""""
+	"""Part (a)"""
 	f = lambda x: 1. / (3. + x**2)
 	F = lambda x: np.arctan(x / np.sqrt(3)) / np.sqrt(3)
 
 	a, b, n = -3, 3, 8
-	print(f"Approximation of I using {n} intervals: {trapezium_rule_1d(f, a, b, n)}")
+	exact = F(b) - F(a)
+	approx = trapezium_rule_1d(f, a, b, n)
+	error = np.abs(approx - exact)
+	print(f"Exact value of I   : {exact}")
+	print(f"Approx. value of I : {approx}")
+	print(f"Absolute error in I: {error}")
 
+	"""Part (b)"""
+	h = (b - a) / n
+	print(f"p = log(error) / log(step size) = {np.log(error) / np.log(h)}")
+
+	"""Part (c)"""
 	j = lambda x: np.exp(-(np.cos(x) ** 2))
-	a, b, n = 0, 2, 100
-	print("\n".join(f"Approximation of J using {n} intervals: {trapezium_rule_1d(j, a, b, n)}" for n in range(10, 100, 10)))
+	a, b = 0, 2
+	print("\n".join(f"Approx. value of J ({n} intervals): {trapezium_rule_1d(j, a, b, num=n)}" for n in range(200, 600, 100)))
 
-	K = lambda x: trapezium_rule_1d(j, 0, x, num=100)
+	n = 300
+	print(f"J = {trapezium_rule_1d(j, a, b, n):.4f} ({n} intervals)")
 
+	"""Part (d)"""
+	K = lambda x: trapezium_rule_1d(j, 0, x, num=500)
+
+	"""Create a new figure and axes"""
 	figure = plot.figure()
 	axes = figure.add_subplot(111)
 
+	"""Plot K over [0, 5π]"""
 	x = np.linspace(0, 5 * np.pi)
-	axes.plot(x, j(x), label="y = j(x)")
+	# axes.plot(x, j(x), label="y = j(x)")
 	axes.plot(x, K(x), label="y = K(x)")
 
 	axes.set_title("Exercise 1. (d)")
