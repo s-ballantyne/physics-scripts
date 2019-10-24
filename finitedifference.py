@@ -68,10 +68,12 @@ def exercise_one():
 	print(	f"The error in the result decreases to a minimum of "
 			f"{np.amin(abs_err):.15f} (h = {h[np.argmin(abs_err)]}).\n"
 			f"After that, it appears to increase as the step size gets smaller.\n"
-			f"Perhaps this is due to the accumulation of floating-point arithmetic errors,"
-			f" since real numbers cannot be exactly represented on a computer with finite"
-			f" precision, which may be magnified by the representation of the mathematical"
-			f" formula in this script.")
+			f"Perhaps this is due to the accumulation of floating-point arithmetic errors,\n"
+			f" since real numbers cannot be exactly represented on a computer with finite\n"
+			f" precision, which may be magnified by the representation of the mathematical\n"
+			f" formula in this script.\n"
+			f"It could also be due to the truncation error of the Taylor expansion,\n"
+			f" since the formula is only first-order accurate.")
 
 	# axes.plot(x, y, label="$y = f(x)$", color="b")
 	# axes.errorbar(x, dy_dx, err, label="$y = f^{\prime}(x)$", color="g")
