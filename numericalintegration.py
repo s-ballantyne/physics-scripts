@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Solution to second MT2503 Python project."""
+import functools
 
 import numpy as np
 import matplotlib.pyplot as plot
@@ -56,7 +57,16 @@ def trapezium_rule_2d(f, a, b, c, d, nx=100, ny=100):
 	return trapezium_rule_a(trapezium_rule_a(f(*ndm(x, y)), h), k)
 
 
-print(f"area = {trapezium_rule_2d(lambda x, y: 1. / (x**4 + y**2), np.sqrt(2), 3, 0, 8)}")
+def trapezium_rule_nd(f_, *limits, num=100):
+	"""
+	Result may be off by 1-2%
+
+	:param f_:
+	:param limits:
+	:param num:
+	:return:
+	"""
+	return functools.reduce(trapezium_rule_a, [(b - a) / num for a, b in limits], f_(*ndm(*[np.linspace(a, b, num=num) for a, b in limits])))
 
 
 def exercise_one():
@@ -91,5 +101,6 @@ def exercise_two():
 
 
 exercise_one()
+exercise_two()
 
 plot.show()
