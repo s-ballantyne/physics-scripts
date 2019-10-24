@@ -5,15 +5,6 @@ import numpy as np
 import matplotlib.pyplot as plot
 
 
-try:
-	has_scipy = True
-	from scipy.misc import derivative as scipy_derivative
-except ImportError:
-	has_scipy = False
-	scipy_derivative = lambda: 0
-	pass
-
-
 def forward_difference(f, x, h):
 	"""Forward difference method"""
 	return (f(x + h) - f(x)) / h
@@ -107,9 +98,6 @@ def exercise_two():
 	"""Print results for (b)"""
 	x_i = -0.5
 	h = 1e-4
-	if has_scipy:
-		"""SciPy uses the same method."""
-		print(f"dy/dx at x = {x_i}, step = {h}, using SciPy's derivative: {scipy_derivative(f, x_i, h):.4f}")
 
 	central = central_difference(f, x_i, h)
 	print(f"dy/dx at x = {x_i}, step = {h}, using central difference: {central:.4f}")
@@ -122,7 +110,7 @@ def exercise_two():
 
 	print(f"dy/dx at x = {x_i}, step = {h / (10 ** dh)}, using forward difference: {forward:.4f}")
 	print(f"Forward difference has to have a step size {dh} order(s) of magnitude less than required for the central"
-		  f" difference method to get identical results.")
+		  f" difference method to get results identical to 5 decimal places.")
 
 	axes.set_title(r"Exercise two: $f(x) = \tan(x \cdot \sin(x))$")
 	axes.grid()
@@ -172,8 +160,8 @@ def exercise_three():
 
 	print("My scheme is: \n\t(f(x + h, y) - f(x - h, y)) / 2h\n\t(f(x, y + k) - f(x, y - k)) / 2k")
 
-	print(f"[dx, dy] = {grad(f, coords=(1., 0.5), steps=(1e-3, 1e-3))}")
-	print(f"Directional derivative: {directional_derivative(f, coords=(1., 0.5), vector=(2., -1.), steps=(0.001, 0.001))}")
+	print(f"grad(f) at -0.5 = {grad(f, coords=(1., 0.5), steps=(1e-3, 1e-3))}")
+	print(f"directional derivative = {directional_derivative(f, coords=(1., 0.5), vector=(2., -1.), steps=(0.001, 0.001))}")
 
 
 if __name__ == "__main__":
