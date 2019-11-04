@@ -20,14 +20,7 @@ def ndm(*args, **kwargs):
 	return [x[(np.newaxis,) * i + (slice(start, stop),) + (np.newaxis,) * (len(args) - i - 1)] for i, x in enumerate(args)]
 
 
-"""
-args = np.array([[1, 2, 3, 4, 5], [6, 7, 8, 9, 0]])
-print(*[x[(np.newaxis,) * i + (slice(np.newaxis),) + (np.newaxis,) * (len(args) - i - 1)] for i, x in enumerate(args)])
-print(*[x[(np.newaxis,) * i + (slice(1, -1),) + (np.newaxis,) * (len(args) - i - 1)] for i, x in enumerate(args)])
-print(*[x[(np.newaxis,) * i + (slice(-1, None),) + (np.newaxis,) * (len(args) - i - 1)] for i, x in enumerate(args)])
-"""
-
-def trapezium_rule_a(y, h):
+def _trapezium_rule(y, h):
 	""""""
 	"""
 		sum(f(x[1:])) = f(x_1) + ... + f(x_n)
@@ -48,25 +41,43 @@ def trapezium_rule_1d(f, a, b, num=100):
 	:return: approximate area under f(x) in [a, b]
 	"""
 	x, h = np.linspace(a, b, num=num, retstep=True)
-	return trapezium_rule_a(f(x), h)
+	return _trapezium_rule(f(x), h)
 
 
 def trapezium_rule_2d(f, a, b, c, d, nx=100, ny=100):
+	"""
+
+	:param f: function to integrate
+	:param a: lower limit for x
+	:param b: upper limit for x
+	:param c: lower limit for y
+	:param d: upper limit for y
+	:param nx: number of samples for x
+	:param ny: number of samples for y
+	:return: area estimated by double trapezium rule
+	"""
 	x, h = np.linspace(a, b, num=nx, retstep=True)
 	y, k = np.linspace(c, d, num=ny, retstep=True)
-	return trapezium_rule_a(trapezium_rule_a(f(*ndm(x, y)), h), k)
+
+	"""Evaluate the trapezium rule twice"""
+	return _trapezium_rule(
+		_trapezium_rule(
+			f(*ndm(x, y)),
+			h),
+		k
+	)
 
 
-def trapezium_rule_nd(f_, *limits, num=100):
-	"""
-	Result may be off by 1-2%
-
-	:param f_:
-	:param limits:
-	:param num:
-	:return:
-	"""
-	return functools.reduce(trapezium_rule_a, [(b - a) / num for a, b in limits], f_(*ndm(*[np.linspace(a, b, num=num) for a, b in limits])))
+def trapezium_rule_nd(f, *limits, num=100):
+	return functools.reduce(
+		_trapezium_rule,
+		[(b - a) / num for a, b in limits],
+		f(
+			*ndm(
+				*[np.linspace(a, b, num=num) for a, b in limits]
+			)
+		)
+	)
 
 
 def exercise_one():
@@ -76,16 +87,17 @@ def exercise_one():
 	F = lambda x: np.arctan(x / np.sqrt(3)) / np.sqrt(3)
 
 	a, b, n = -3, 3, 8
-	exact = F(b) - F(a)
+	actual = F(b) - F(a)
 	approx = trapezium_rule_1d(f, a, b, n)
-	error = np.abs(approx - exact)
-	print(f"Exact value of I   : {exact}")
+	error = np.abs(approx - actual)
+	print(f"Exact value of I   : {actual}")
 	print(f"Approx. value of I : {approx}")
 	print(f"Absolute error in I: {error}")
 
 	"""Part (b)"""
 	h = (b - a) / n
 	print(f"p = log(error) / log(step size) = {np.log(error) / np.log(h)}")
+	print(f"step size = {h}")
 
 	"""Part (c)"""
 	j = lambda x: np.exp(-(np.cos(x) ** 2))
@@ -115,7 +127,24 @@ def exercise_one():
 
 
 def exercise_two():
-	pass
+	f = lambda x, y: np.exp(-(x**2 + y**2))
+
+	# [-inf, inf] was taken to be [-10, 10]
+	# since exp(-(10^2)) is small anyway.
+	nx, ny = 50, 50
+	actual = np.pi
+	approx = trapezium_rule_2d(
+		f,
+		a=-10, b=10,
+		c=-10, d=10,
+		nx=nx, ny=ny
+	)
+
+	print(
+		"∫∫exp(-(x^2 + y^2)).dx.dy between x = -inf -> inf, y = -inf, inf:\n"
+		f" Approx value: {approx:.12f} ({nx}, {ny} samples for each integral)\n"
+		f" Actual value: {actual:.12f} (π)"
+	)
 
 
 exercise_one()
