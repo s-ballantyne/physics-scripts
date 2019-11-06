@@ -147,7 +147,8 @@ def exercise_two():
 	)
 
 
-exercise_one()
-exercise_two()
+if __name__ == "__main__":
+	exercise_one()
+	exercise_two()
 
-plot.show()
+	plot.show()
