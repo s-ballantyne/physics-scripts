@@ -31,7 +31,7 @@ def exercise_one():
 	g = lambda x: -2 * x * f(x)
 
 	"""Evaluate forward difference"""
-	x, h = np.linspace(-2, 2, num=100, retstep=True)
+	x, h = np.linspace(-2, 2, num=101, retstep=True)
 	dy_dx = forward_difference(f, x, h)
 
 	"""Evaluate and find maximum error"""
@@ -89,7 +89,7 @@ def exercise_two():
 	f = lambda x: np.tan(x * np.sin(x))
 
 	"""Evaluate the derivative using second-order central difference"""
-	x, h = np.linspace(-1, 1, num=100, retstep=True)
+	x, h = np.linspace(-1, 1, num=101, retstep=True)
 	dy_dx = central_difference(f, x, h)
 
 	"""Plot results for (a)"""
@@ -187,6 +187,7 @@ def exercise_three():
 		print(f"h = {h:.{h_space.size}f} error = ({error_x:.12f}, {error_y:.12f}) error/step^2 = ({error_x/h**2:f}, {error_y/h**2:f})")
 
 	print("It is clear from the above results that the error is proportional to the step size squared.")
+
 
 if __name__ == "__main__":
 	exercise_one()
